@@ -18,11 +18,14 @@ module Danger
     # Allows you to specify a config file location for swiftlint.
     attr_accessor :config_file
 
-    # Allows you to specify a directory from where swiftlint will be run. 
+    # Allows you to specify a directory from where swiftlint will be run.
     attr_accessor :directory
 
+    # Allows you to specify to fail when errors exist.
+    attr_accessor :fail_when_errors_exist
+
     # Lints Swift files. Will fail if `swiftlint` cannot be installed correctly.
-    # Generates a `markdown` list of warnings for the prose in a corpus of .markdown and .md files. 
+    # Generates a `markdown` list of warnings for the prose in a corpus of .markdown and .md files.
     #
     # @param   [String] files
     #          A globbed string which should return the files that you want to lint, defaults to nil.
@@ -48,11 +51,15 @@ module Danger
       result_json = JSON.parse(`(#{swiftlint_command})`).flatten
 
       # Convert to swiftlint results
-      warnings = result_json.select do |results| 
+      warnings = result_json.select do |results|
         results['severity'] == 'Warning'
       end
-      errors = result_json.select do |results| 
-        results['severity'] == 'Error' 
+      errors = result_json.select do |results|
+        results['severity'] == 'Error'
+      end
+
+      if fail_when_errors_exist && errors.count > 0
+        fail("SwiftLint found #{errors.count} error#{errors.count > 1 ? "s" : ""}.")
       end
 
       message = ''

@@ -25,6 +25,7 @@ swiftlint.lint_files
 That's going to lint all your Swift files. It would be better to only lint the changed or added ones, which is complicated due. Check out [this issue](https://github.com/ashfurrow/danger-swiftlint/issues/16) for more details.
 
 ```rb
+swiftlint.fail_when_errors_exist = true
 swiftlint.config_file = '.swiftlint.yml'
 swiftlint.lint_files
 ```
