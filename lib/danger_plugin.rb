@@ -58,21 +58,28 @@ module Danger
         results['severity'] == 'Error'
       end
 
-      if fail_when_errors_exist && errors.count > 0
-        fail("SwiftLint found #{errors.count} error#{errors.count > 1 ? "s" : ""}.")
-      end
-
-      message = ''
-
       # We got some error reports back from swiftlint
       if warnings.count > 0 || errors.count > 0
+        message = ''
+
         message = "### SwiftLint found issues\n\n"
+        message << parse_results(warnings, 'Warnings') unless warnings.empty?
+        message << parse_results(errors, 'Errors') unless errors.empty?
+
+        markdown message unless message.empty?
+
+      if fail_when_errors_exist && errors.count > 0
+        fail("SwiftLint found #{errors.count} error#{errors.count > 1 ? "s" : ""}.")
+      elsif warnings.count >= 0 || errors.count >= 0
+        warn_message = "SwiftLint found "
+        types = []
+        types << "#{warnings.count} warning#{warnings.count > 1 ? "s" : ""}" if warnings.count > 0
+        types << "#{errors.count} error#{errors.count > 1 ? "s" : ""}" if errors.count > 0
+        warn_message << types.join(" and ") << "."
+        warn(warn_message)
       end
 
-      message << parse_results(warnings, 'Warnings') unless warnings.empty?
-      message << parse_results(errors, 'Errors') unless errors.empty?
 
-      markdown message unless message.empty?
     end
 
     # Parses swiftlint invocation results into a string
