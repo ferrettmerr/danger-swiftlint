@@ -67,7 +67,8 @@ module Danger
         message << parse_results(errors, 'Errors') unless errors.empty?
 
         markdown message unless message.empty?
-
+      end
+      
       if fail_when_errors_exist && errors.count > 0
         fail("SwiftLint found #{errors.count} error#{errors.count > 1 ? "s" : ""}.")
       elsif warnings.count >= 0 || errors.count >= 0
