@@ -71,13 +71,15 @@ module Danger
       
       if fail_when_errors_exist && errors.count > 0
         fail("SwiftLint found #{errors.count} error#{errors.count > 1 ? "s" : ""}.")
-      elsif warnings.count >= 0 || errors.count >= 0
+      elsif warnings.count > 0
         warn_message = "SwiftLint found "
         types = []
         types << "#{warnings.count} warning#{warnings.count > 1 ? "s" : ""}" if warnings.count > 0
         types << "#{errors.count} error#{errors.count > 1 ? "s" : ""}" if errors.count > 0
         warn_message << types.join(" and ") << "."
         warn(warn_message)
+      else
+        message("SwiftLint found no issues.")
       end
 
 
